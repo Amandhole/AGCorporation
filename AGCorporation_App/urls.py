@@ -4,8 +4,8 @@ from AGCorporation_App.views import *
 
 
 urlpatterns = [
-    path('',Admin_Login,name='Admin_Login'),
-    path('Blog_Dashboard',Blog_Dashboard,name='Blog_Dashboard'),
+    path('',Login,name='Login'),
+    path('Admin_Dashboard',Admin_Dashboard,name='Admin_Dashboard'),
     path('Chats',Chats,name='Chats'),
     path('Filemanager',Filemanager,name='Filemanager'),
     path('Register',Register,name='Register'),
@@ -19,8 +19,7 @@ urlpatterns = [
     path('Form_Upload',Form_Upload,name='Form_Upload'),
     path('Form_Wizard',Form_Wizard,name='Form_Wizard'),
     path('Form_Mask',Form_Mask,name='Form_Mask'),
-    path('Saas_Dashboard',Saas_Dashboard,name='Saas_Dashboard'),
-    path('Crypto_Dashboard',Crypto_Dashboard,name='Crypto_Dashboard'),
+    
     # path('Data_Table',Data_Table,name='Data_Table'),
     path('Horizontal_Menu',Horizontal_Menu,name='Horizontal_Menu')
 ]

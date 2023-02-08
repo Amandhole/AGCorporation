@@ -62,27 +62,33 @@
                                     <form class="form-horizontal" action="index.html">
         
                                         <div class="mb-3">
+                                        
                                             <label for="username" class="form-label">Username</label>
                                             <input type="text" class="form-control" id="username" placeholder="Enter username">
+                                            
+                                            <span id="username_error" style="color: red; display: none;">Enter Username</span>
+                                            <span id="valid_username_error" style="color: red;display: none; ">Enter Valid Username</span>
+                                        
                                         </div>
                 
                                         <div class="mb-3">
                                             <label class="form-label">Password</label>
+
                                             <div class="input-group auth-pass-inputgroup">
-                                                <input type="password" class="form-control" placeholder="Enter password" aria-label="Password" aria-describedby="password-addon">
-                                                <button class="btn btn-light " type="button" id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
+                                                <input type="password" id="password" class="form-control" placeholder="Enter password" aria-label="Password" aria-describedby="password-addon">
+                                                <!-- <button class="btn btn-light " type="button" id="password-addon"><i class="mdi mdi-eye-outline"></i></button> -->
                                             </div>
+                                            
+                                            <span id="password_error" style="color: red;display: none;">Enter Password</span>
                                         </div>
 
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="remember-check">
-                                            <label class="form-check-label" for="remember-check">
-                                                Remember me
-                                            </label>
+                                            <!-- <input class="form-check-input" type="checkbox" id="remember-check">
+                                            <label class="form-check-label" for="remember-check">Remember me</label> -->
                                         </div>
                                         
                                         <div class="mt-3 d-grid">
-                                            <button class="btn btn-primary waves-effect waves-light" type="submit">Log In</button>
+                                            <button class="btn btn-primary waves-effect waves-light" type="button" onclick="Login_function()">Log In</button>
                                         </div>
             
                                         <div class="mt-4 text-center">
@@ -135,8 +141,72 @@
         <script src="{% static 'assets/libs/metismenu/metisMenu.min.js' %}"></script>
         <script src="{% static 'assets/libs/simplebar/simplebar.min.js' %}"></script>
         <script src="{% static 'assets/libs/node-waves/waves.min.js' %}"></script>
-        
         <!-- App js -->
         <script src="{% static 'assets/js/app.js' %"></script>
+
+
+
+
+        <script>
+
+
+            $("#username").click(function(){
+                $("#username_error").hide()
+                $("#valid_username_error").hide()
+            })
+
+            $("#password").click(function(){
+                $("#password_error").hide()
+            })
+
+
+            function Login_function(){
+
+                var username = $("#username").val()
+                var password = $("#password").val()
+
+
+                if (username == 'Admin' || username == 'admin' ){
+                    if (username==''){
+                        $("#username_error").show()
+                    }
+                    
+                    else if(password==''){
+                        $("#password_error").show()
+                    }
+
+                    else{
+                        $.ajax({
+                            method:"POST",
+                            url:"{% url 'Login' %}",
+                            contentType:"application/json",
+                            data:JSON.stringify({
+                                'username':username,
+                                'password':password,
+                                'user_type':'Admin'
+                            }),
+                            success:function(response){
+                                if (response['status'] == 1){
+                                    alert('Admin Login')
+                                    location.href="{% url 'Admin_Dashboard' %}"
+                                }
+
+                                else{
+                                    alert('in else')
+                                    console.log(response)
+                                }
+                            }
+                        })
+                    }
+
+                }
+                else{
+                    alert('IN ELSE')
+                }
+            }
+
+        </script>
+
+
     </body>
 </html>

@@ -1,17 +1,63 @@
 from django.shortcuts import render
-
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import cache_control
+import traceback
+from django.http import JsonResponse
+import json
+from .models import *
 # Create your views here.
-def Admin_Login(request):
-    return render(request,'admin_login.html')
+@csrf_exempt
 
-def Blog_Dashboard(request):
-    return render(request,'dashboard.html')    
+##############Login Functionality for admin , staf , service
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def Login(request):
+    # user_types = Admin ,Staf,Service
+    session_id = request.session.get('user_id')
+    try:
+        if request.method == "POST":
+            data = json.loads(request.body.decode('utf-8'))
+            username = data['username']
+            password = data['password']
+            user_type =data['user_type']
+            print(user_type)
+            
+            if user_type == "Admin" or user_type =='admin':
+                if User_Details.objects.filter(Username=username, Password=password).exists():
+                    admin_obj = User_Details.objects.get(Username=username, Password=password,User_Type=user_type)
+                    request.session['user_id'] = str(admin_obj.id)
+                    send_data = {"status": 1, "msg": "Admin Login succesfully"}
+                else:
+                    send_data = {"status": 0, "msg": "Invalid Credential"}
 
-def Saas_Dashboard(request):
-    return render(request,'dashboard_saas.html')
+
+            elif user_type == "Staf":
+                if User_Details.objects.filter(Username=username, Password=password).exists():
+                    staf_obj = User_Details.objects.get(Username=username, Password=password,User_Type=user_type)
+                    request.session['user_id'] = str(staf_obj.id)
+                    send_data = {"status": 2, "msg": "Staf Login succesfully"}
+                else:
+                    send_data = {"status": 0, "msg": "Invalid Credential"}
+            
+
+            elif user_type == "Service":
+                if User_Details.objects.filter(Username=username, Password=password).exists():
+                    staf_obj = User_Details.objects.get(Username=username, Password=password,User_Type=user_type)
+                    request.session['user_id'] = str(staf_obj.id)
+                    send_data = {"status": 3, "msg": "Staf Login succesfully"}
+                else:
+                    send_data = {"status": 0, "msg": "Invalid Credential"}
+        else:
+            return render(request,'login.html')
+    except:
+        print(traceback.format_exc())
+        send_data = {'status':0,'msg':'Request is not post','error':traceback.format_exc()}
+
+    return JsonResponse(send_data)
+
+    
 
 
-def Crypto_Dashboard(request):
+def Admin_Dashboard(request):
     return render(request,'dashboard_crypto.html')
 
 def Chats(request):
